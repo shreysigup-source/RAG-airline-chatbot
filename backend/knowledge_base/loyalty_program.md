@@ -1,7 +1,5 @@
 # Loyalty Program
 
-> Internal knowledge base note: This is a synthetic, airline-neutral customer support reference for a RAG chatbot. It is written in original wording and should be adapted to the operating airline's filed tariffs, fare rules, local laws, and live airport notices before production use.
-
 ## Purpose
 
 This document covers enrollment, earning, status, redemptions, missing miles, partner activity, benefits, and account security.

@@ -25,4 +25,4 @@ def generate_embeddings(
 
     embeddings = model.encode(texts)
 
-    return embeddings
+    return model, embeddings

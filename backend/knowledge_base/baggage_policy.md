@@ -1,7 +1,5 @@
 # Baggage Policy
 
-> Internal knowledge base note: This is a synthetic, airline-neutral customer support reference for a RAG chatbot. It is written in original wording and should be adapted to the operating airline's filed tariffs, fare rules, local laws, and live airport notices before production use.
-
 ## Purpose
 
 This document provides detailed guidance for cabin baggage, checked baggage, special items, restricted goods, baggage disruptions, and baggage-related customer service decisions.
