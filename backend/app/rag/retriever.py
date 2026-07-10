@@ -21,7 +21,7 @@ def retrieve_documents(
         metadata, IDs, and distances.
     """
 
-    query_embedding = generate_embeddings([query])[0]
+    query_embedding = generate_embeddings([query])[1][0]
 
     results = collection.query(
         query_embeddings=[query_embedding],

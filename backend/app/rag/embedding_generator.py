@@ -3,14 +3,14 @@ from langchain_core.documents import Document
 
 
 def generate_embeddings(
-    documents: list[Document],
+    documents,
     model_name: str = "all-MiniLM-L6-v2",
 ):
     """
-    Generate embeddings for a list of document chunks.
+    Generate embeddings for a list of document chunks or strings.
 
     Args:
-        documents: List of LangChain Document objects.
+        documents: List of LangChain Document objects or strings.
         model_name: Sentence Transformer model to use.
 
     Returns:
@@ -21,7 +21,13 @@ def generate_embeddings(
 
     model = SentenceTransformer(model_name)
 
-    texts = [document.page_content for document in documents]
+    # Handle both Document objects and strings
+    texts = []
+    for doc in documents:
+        if isinstance(doc, Document):
+            texts.append(doc.page_content)
+        else:
+            texts.append(doc)
 
     embeddings = model.encode(texts)
 

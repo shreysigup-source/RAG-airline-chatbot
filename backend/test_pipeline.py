@@ -2,56 +2,60 @@ from app.rag.document_loader import load_documents
 from app.rag.text_chunker import split_documents
 from app.rag.embedding_generator import generate_embeddings
 from app.rag.vector_store import create_vector_store
+from app.rag.retriever import retrieve_documents
 
 
 def main():
+
     # Step 1: Load documents
     documents = load_documents()
 
-    print("=" * 60)
-    print(f"Documents Loaded: {len(documents)}")
-
-    # Step 2: Split into chunks
+    # Step 2: Split documents
     chunks = split_documents(documents)
-
-    print(f"Total Chunks Created: {len(chunks)}")
 
     # Step 3: Generate embeddings
     model, embeddings = generate_embeddings(chunks)
 
-    print(f"Total Embeddings: {len(embeddings)}")
-    print(f"Embedding Dimension: {len(embeddings[0])}")
-
-    # Step 4: Store embeddings in ChromaDB
+    # Step 4: Store in ChromaDB
     collection = create_vector_store(
         documents=chunks,
         embeddings=embeddings,
     )
 
-    print(f"Vector Database Collection: {collection.name}")
-
+    print("=" * 60)
+    print("Vector Store Created Successfully")
     print("=" * 60)
 
-    # Step 5: Display the first 3 chunks
-    if chunks:
-        for i, chunk in enumerate(chunks[:3], start=1):
-            print("=" * 60)
-            print(f"Chunk {i}")
-            print("=" * 60)
+    while True:
 
-            print(chunk.page_content)
+        question = input("\nAsk a question (or type 'exit'): ")
 
-            print("\nMetadata:")
-            print(chunk.metadata)
+        if question.lower() == "exit":
+            break
 
-            print(f"\nLength: {len(chunk.page_content)} characters\n")
+        results = retrieve_documents(
+            collection=collection,
+            query=question,
+            top_k=3,
+        )
 
-    print("=" * 60)
-    print("First 10 values of the first embedding:")
-    print(embeddings[0][:10])
+        print("\nRetrieved Documents:\n")
 
-    print("=" * 60)
-    print("Vector database created successfully!")
+        documents = results["documents"][0]
+        metadatas = results["metadatas"][0]
+        distances = results["distances"][0]
+
+        for i, (document, metadata, distance) in enumerate(
+            zip(documents, metadatas, distances),
+            start=1,
+        ):
+            print("-" * 60)
+            print(f"Result {i}")
+            print(f"Source   : {metadata['source']}")
+            print(f"Distance : {distance:.4f}")
+            print()
+            print(document)
+            print()
 
 
 if __name__ == "__main__":
