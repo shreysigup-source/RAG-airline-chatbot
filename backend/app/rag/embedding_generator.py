@@ -2,27 +2,26 @@ from sentence_transformers import SentenceTransformer
 from langchain_core.documents import Document
 
 
-def generate_embeddings(
-    documents,
+def load_embedding_model(
     model_name: str = "all-MiniLM-L6-v2",
+) -> SentenceTransformer:
+    """
+    Load and return the embedding model.
+    """
+
+    return SentenceTransformer(model_name)
+
+
+def generate_document_embeddings(
+    model: SentenceTransformer,
+    documents,
 ):
     """
-    Generate embeddings for a list of document chunks or strings.
-
-    Args:
-        documents: List of LangChain Document objects or strings.
-        model_name: Sentence Transformer model to use.
-
-    Returns:
-        tuple:
-            model -> Loaded embedding model
-            embeddings -> List of embedding vectors
+    Generate embeddings for a list of documents.
     """
 
-    model = SentenceTransformer(model_name)
-
-    # Handle both Document objects and strings
     texts = []
+
     for doc in documents:
         if isinstance(doc, Document):
             texts.append(doc.page_content)
@@ -31,4 +30,21 @@ def generate_embeddings(
 
     embeddings = model.encode(texts)
 
-    return model, embeddings
+    return embeddings
+
+
+def generate_query_embedding(
+    model: SentenceTransformer,
+    query: str,
+):
+    """
+    Generate an embedding for a user's query.
+    """
+
+    return model.encode([query])[0]
+
+"""
+Why not simple return model.encode(query)
+Because document embeddings are generated from a list of texts, while a query is a single text. Using model.encode([query])[0] ensures the output shape is consistently a single embedding vector and avoids any ambiguity across model versions.
+It isn't strictly required for many Sentence Transformers models, but it's a good habit and makes the intent explicit.
+"""
