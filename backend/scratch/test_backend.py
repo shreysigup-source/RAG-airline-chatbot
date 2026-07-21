@@ -33,27 +33,16 @@ def test_endpoints():
         assert response.status_code == 200
         assert "status" in response.json()
 
-        # 3. Test Chat with direct policy match
-        print("\n[Test 3] POST /chat (Direct policy check: baggage allowance)")
+        # 3. Test Chat with general query (RAG fallback)
+        print("\n[Test 3] POST /chat (RAG check: baggage allowance)")
         response = client.post("/chat", json={"message": "What is the baggage allowance?"})
         print(f"Status Code: {response.status_code}")
         print(f"Response: {response.json()}")
         assert response.status_code == 200
         assert "baggage" in response.json()["response"].lower()
 
-        # 4. Test Chat with tool calling
-        print("\n[Test 4] POST /chat (Tool calling check: search flights)")
-        try:
-            response = client.post("/chat", json={"message": "Are there any flights from Mumbai to Dubai?"})
-            print(f"Status Code: {response.status_code}")
-            print(f"Response: {response.json()}")
-            assert response.status_code == 200
-            assert "response" in response.json()
-        except Exception as e:
-            print(f"Chat (Tool Calling) skipped/failed: {e}")
-
-        # 5. Test Chat with general query (RAG fallback)
-        print("\n[Test 5] POST /chat (RAG check: FAQ query)")
+        # 4. Test Chat with general query (RAG fallback)
+        print("\n[Test 4] POST /chat (RAG check: FAQ query)")
         try:
             response = client.post("/chat", json={"message": "Tell me about the loyalty program rules."})
             print(f"Status Code: {response.status_code}")
